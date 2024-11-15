@@ -79,7 +79,7 @@ def _capture_screenshot(page: Page, name: str):
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
     # Define the allure-results directory
-    allure_dir = os.path.join(os.getcwd(), 'allure-results')
+    allure_dir = os.path.join(os.getcwd(), 'allure-resultsss')
     if os.path.exists(allure_dir):
         shutil.rmtree(allure_dir)  # Delete the allure-results folder
     os.makedirs(allure_dir)  # Recreate the directory if necessary
