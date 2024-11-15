@@ -1,0 +1,7 @@
+[
+  "Signedly/test_contact_creation.py::test_contact",
+  "Signedly/test_folder_creation_self_signee.py::test_folder_creation",
+  "Signedly/test_self_signee.py::test_selfsignee",
+  "Signedly/test_template_creation.py::test_template_creation",
+  "Signedly/test_workflow_creation.py::test_workflow"
+]

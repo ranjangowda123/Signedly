@@ -1,0 +1,4 @@
+{
+  "test_contact_creation.py::test_contact_creation": true,
+  "test_bulk_sending.py::test_bulksending": true
+}
