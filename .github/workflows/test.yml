@@ -26,10 +26,12 @@ jobs:
       - name: Install Google Chrome
         run: |
           # Download Chrome installer
-          $chrome_installer_url = "https://dl.google.com/chrome/install/GoogleChromeSetup.exe"
+          $chrome_installer_url = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
           Invoke-WebRequest -Uri $chrome_installer_url -OutFile "$env:USERPROFILE\chrome_installer.exe"
+          
           # Install Chrome silently
           Start-Process -FilePath "$env:USERPROFILE\chrome_installer.exe" -ArgumentList "/silent", "/install" -Wait
+          
           # Clean up installer file
           Remove-Item "$env:USERPROFILE\chrome_installer.exe"
 
