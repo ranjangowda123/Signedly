@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Playwright dependencies
         run: |
-          python -m playwright install --with-deps
+          python -m pip install playwright  
 
       - name: Run tests
         run: |
