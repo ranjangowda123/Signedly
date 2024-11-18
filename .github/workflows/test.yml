@@ -17,6 +17,21 @@ jobs:
         with:
           python-version: '3.12.5'
 
+      - name: Install Allure Commandline (Windows)
+        shell: pwsh
+        run: |
+          # Download Allure Commandline zip file
+          Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.20.1/allure-2.20.1.zip" -OutFile "allure-commandline.zip"
+
+          # Extract Allure Commandline zip
+          Expand-Archive -Path "allure-commandline.zip" -DestinationPath "allure"
+
+          # Add Allure to PATH for current session
+          $env:Path += ";$PWD\allure\allure-2.20.1"
+
+          # Run Allure to verify installation
+          & "$PWD\allure\allure-2.20.1\allure.bat" --version
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -34,10 +49,6 @@ jobs:
           
           # Clean up installer file
           Remove-Item "$env:USERPROFILE\chrome_installer.exe"
-
-      - name: Install Playwright dependencies
-        run: |
-          python -m pip install playwright  
 
       - name: Run tests
         run: |
