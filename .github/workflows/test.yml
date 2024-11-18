@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-
   test:
     runs-on: windows-latest
 
@@ -24,11 +23,16 @@ jobs:
           pip install pytest-playwright
           pip install allure-pytest
 
-      - name: Ensure browsers are installed
-        run: python -m playwright install chromium --with-deps
+      - name: Install Chrome
+        run: |
+          choco install google_chrome --version= 131.0.6778.70
+
+      - name: Install Playwright dependencies
+        run: |
+          python -m playwright install --with-deps
 
       - name: Run tests
-        run:
+        run: |
           pytest -v -s
 
       - name: Generate Allure Report
