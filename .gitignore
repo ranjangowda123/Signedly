@@ -1,1 +1,4 @@
 Playwright_basics/
+.venv/
+.idea/
+main.py/
