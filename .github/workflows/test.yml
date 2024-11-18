@@ -23,9 +23,12 @@ jobs:
           pip install pytest-playwright
           pip install allure-pytest
 
-      - name: Install Chrome
+      - name: Install specific version of Google Chrome (131.0.6778.70)
         run: |
-          choco install google_chrome
+          $chrome_version = "131.0.6778.70"
+          $chrome_installer_url = "https://dl.google.com/release2/chrome/${chrome_version}/chrome_installer.exe"
+          Invoke-WebRequest -Uri $chrome_installer_url -OutFile "$env:USERPROFILE\chrome_installer.exe"
+          Start-Process -FilePath "$env:USERPROFILE\chrome_installer.exe" -ArgumentList "/silent", "/install" -Wait
 
       - name: Install Playwright dependencies
         run: |
