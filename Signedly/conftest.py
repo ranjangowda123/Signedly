@@ -17,7 +17,8 @@ def page(request):
         raise RuntimeError("An asyncio event loop is running. Please use the sync API outside an async event loop.")
     browser_name = request.config.getoption("browser_name")
     with sync_playwright() as playwright:
-        browser = getattr(playwright, browser_name).launch(headless=False,slow_mo=500)
+        chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        browser = playwright.chromium.launch(executable_path=chrome_path,headless=False,slow_mo=500)
         page = browser.new_page()
         page.goto("https://qa.signedly.com/")
         page.get_by_label("Email").fill("ranjan+7@reckonsys.com")

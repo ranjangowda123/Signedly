@@ -1,4 +1,5 @@
 [
+  "conftest.py::test_setup",
   "test-workflow_creation.py::test_workflow",
   "test_bulk_sending.py::test_bulksending",
   "test_contact_creation.py::test_contact",
