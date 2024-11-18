@@ -24,10 +24,19 @@ jobs:
           pip install pytest-playwright
           pip install allure-pytest
 
-
       - name: Ensure browsers are installed
         run: python -m playwright install chromium --with-deps
 
       - name: Run tests
         run:
           pytest -v -s
+
+      - name: Generate Allure Report
+        run: |
+          allure generate allure-results --clean -o allure-report
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-report

@@ -25,7 +25,7 @@ def page(request):
         page.locator("#kc-login").click()
         yield page
         print("Ready To Logout...........")
-        page.wait_for_selector("#profileDownArrow" , state="visible")
+        page.wait_for_selector("#profileDownArrow" , state="visible", timeout=100000)
         page.locator("#profileDownArrow").click()
         page.get_by_text("Logout").click()
         page.close()

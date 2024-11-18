@@ -33,5 +33,7 @@ def test_selfsignee(page:Page):
             print("Ready To Click........")
             row.click()
             break
-    page.locator(".loader").wait_for(state="hidden", timeout=5000)
+    page.locator(".loader").first.wait_for(state="hidden", timeout=5000)
     home.view_doc()
+    print("Self Signee Added Successfully")
+

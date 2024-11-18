@@ -47,5 +47,6 @@ def test_folder_creation(page:Page):
             print("Ready To Click........")
             row.click()
             break
-    page.locator(".loader").wait_for(state="hidden", timeout=50000)
+    page.locator(".loader").first.wait_for(state="hidden", timeout=50000)
     home.view_doc()
+    print("Folder Added Successfully")

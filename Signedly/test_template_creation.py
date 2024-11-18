@@ -35,4 +35,5 @@ def test_template_creation(page:Page):
     page.locator(".loader").first.wait_for(state="hidden", timeout=50000)
     home.preview_doc()
     home.close_buton()
+    print("Template Created Successfully")
 
