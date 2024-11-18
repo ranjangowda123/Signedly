@@ -23,9 +23,15 @@ jobs:
           pip install pytest-playwright
           pip install allure-pytest
 
-      - name: Install Chrome
+      - name: Install Google Chrome
         run: |
-          choco install google_chrome -y
+          # Download Chrome installer
+          $chrome_installer_url = "https://dl.google.com/chrome/install/GoogleChromeSetup.exe"
+          Invoke-WebRequest -Uri $chrome_installer_url -OutFile "$env:USERPROFILE\chrome_installer.exe"
+          # Install Chrome silently
+          Start-Process -FilePath "$env:USERPROFILE\chrome_installer.exe" -ArgumentList "/silent", "/install" -Wait
+          # Clean up installer file
+          Remove-Item "$env:USERPROFILE\chrome_installer.exe"
 
       - name: Install Playwright dependencies
         run: |
@@ -43,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
-
+          path: allure-report
