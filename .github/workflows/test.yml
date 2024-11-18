@@ -27,10 +27,10 @@ jobs:
           Expand-Archive -Path "allure-commandline.zip" -DestinationPath "allure"
 
           # Add Allure to PATH for current session
-          $env:Path += ";$PWD\allure\allure-2.32.0"
+          $env:Path += "%cd%\allure\allure-2.32.0"
 
           # Run Allure to verify installation
-          & "$PWD\allure\allure-2.32.0\allure.bat" --version
+          & "%cd%\allure\allure-2.32.0\allure.bat" --version
 
       - name: Install dependencies
         run: |
