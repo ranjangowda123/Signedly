@@ -40,25 +40,24 @@ jobs:
           Move-Item -Path "allure/allure-2.32.0/bin/*" -Destination "C:\allure\bin" -Force
           
           # Clean up the extracted files
-          Remove-Item -Recurse -Force -Path "allure"        # Removing the 'allure' directory
-          Remove-Item -Force -Path "allure.zip"             # Removing the 'allure.zip' file
-          
-          # Add Allure to the system PATH for the current session
-          $env:PATH += ";C:\allure\bin"
-          Write-Host "Allure installed and added to PATH"
-      
+          Remove-Item -Recurse -Force -Path "allure"         # Removing the 'allure' directory
+          Remove-Item -Force -Path "allure.zip"              # Removing the 'allure.zip' file
 
+      - name: Add Allure to PATH
+        run: |
+          echo "C:\\allure\\bin" >> $Env:GITHUB_PATH  # Add Allure to the system PATH
+
+      - name: Verify Allure Command
+        run: |
+          allure --version  # Verify allure is installed and available in PATH
+        
       - name: Run tests
         run: |
           pytest --alluredir=allure-results
 
       - name: Generate Allure Report
         run: |
-          # Verify if allure command is available
-          allure --version
-    
-          # Generate the Allure report (it will generate the report in the 'allure-report' folder)
-          allure generate allure-results --output allure-report
+          allure generate allure-results --output allure-report  # Generate the Allure report
 
       - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
