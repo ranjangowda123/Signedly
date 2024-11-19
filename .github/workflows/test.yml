@@ -27,36 +27,31 @@ jobs:
 
       - name: Install Allure Commandline
         run: |
-          # Download Allure Commandline zip file using curl
-          curl -L "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -o allure.zip
-          
-          # Unzip Allure to the current directory
-          unzip allure.zip -d allure
+                # Download Allure Commandline zip file using curl
+                curl -L "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -o allure.zip
 
-          # Move Allure files to C:\allure
-          mkdir C:\allure
-          Move-Item -Path "allure/allure-2.32.0/bin/*" -Destination "C:\allure\bin" -Force
-          
-          # Clean up the extracted files
-          Remove-Item -Recurse -Force -Path "allure"
-          Remove-Item -Force -Path "allure.zip"
+                # Unzip the downloaded Allure zip file
+                Expand-Archive -Path allure.zip -DestinationPath allure
 
-      - name: Add Allure to PATH for current session
-        run: |
-          $env:PATH = "C:\allure\bin;" + $env:PATH
-          echo "Updated PATH: $env:PATH"  # Debugging step to check if path is set correctly.
+                # Create the directory for Allure installation
+                New-Item -ItemType Directory -Force -Path "C:\allure\bin"
 
-      - name: Verify Allure Installation
-        run: |
-          # Check if Allure is in the path
-          if ($env:PATH -contains "C:\allure\bin") {
-            Write-Host "Allure is in the path."
-          } else {
-            Write-Host "Allure is NOT in the path."
-          }
+                # Move Allure binaries to C:\allure\bin
+                Move-Item -Path "allure/allure-2.32.0/bin/*" -Destination "C:\allure\bin" -Force
 
-          # Now check allure version to verify it works
-          allure --version  # This should print the Allure version if installed correctly
+                # Clean up the extracted files
+                Remove-Item -Recurse -Force -Path "allure"
+                Remove-Item -Force -Path "allure.zip"
+
+            - name: Add Allure to PATH
+              run: |
+                # Add Allure to PATH for the session (modify environment variables)
+                echo "C:\\allure\\bin" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8 -Append
+
+            - name: Verify Allure Installation
+              run: |
+                # Ensure Allure is available in PATH and check the version
+                allure --version
 
       - name: Run tests
         run: |
