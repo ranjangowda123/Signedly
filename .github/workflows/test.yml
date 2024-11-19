@@ -47,10 +47,11 @@ jobs:
         run: |
           echo "C:\\allure\\bin" >> $Env:GITHUB_PATH  # Add Allure to the system PATH
 
-      - name: Verify Allure Command
+      - name: Verify Allure Command Path
         run: |
+          echo $Env:GITHUB_PATH  # Debugging to verify if Allure is in the PATH
           allure --version  # Verify allure is installed and available in PATH
-        
+
       - name: Run tests
         run: |
           pytest --alluredir=allure-results
