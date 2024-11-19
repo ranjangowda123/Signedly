@@ -43,26 +43,12 @@ jobs:
           Remove-Item -Recurse -Force -Path "allure"         # Removing the 'allure' directory
           Remove-Item -Force -Path "allure.zip"              # Removing the 'allure.zip' file
 
-      - name: Add Allure to PATH (directly in the environment)
+      - name: Add Allure to PATH (directly in the session)
         run: |
-          echo "C:\allure\bin" >> $Env:GITHUB_PATH
-          # Add allure to the PATH for this session
+          # Add Allure to PATH for this session
           $env:PATH = "C:\allure\bin;" + $env:PATH
           
-          # Verify Allure is now in the PATH
-          Write-Host "Allure installed at C:\allure\bin"
-          Write-Host "Current PATH: $env:PATH"
-
-      - name: Verify Allure Installation
-        run: |
-          # Check if allure command exists in PATH
-          if (Test-Path "C:\allure\bin\allure.bat") { 
-            Write-Host "Allure is installed at C:\allure\bin" 
-          } else { 
-            Write-Host "Allure not found!" 
-          }
-          
-          # Now check allure version to verify it works
+          # Verify Allure is available by checking the version
           allure --version
 
       - name: Run tests
@@ -71,7 +57,8 @@ jobs:
 
       - name: Generate Allure Report
         run: |
-          allure generate allure-results --output allure-report  # Generate the Allure report
+          # Explicitly use the full path to `allure.bat` to avoid any path issues
+          C:\allure\bin\allure generate allure-results --output allure-report  # Generate the Allure report
 
       - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
