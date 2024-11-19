@@ -1,4 +1,4 @@
-name: Tests
+name: Run Tests and Generate Allure Report
 
 on:
   push:
@@ -10,12 +10,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3  # Checkout the code
 
-      - name: Setup Python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12.5'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -25,42 +25,46 @@ jobs:
         run: |
           python -m playwright install
 
+      # Step 1: Install Allure Commandline
       - name: Install Allure Commandline
         run: |
           # Download Allure Commandline zip file using curl
-          curl -o allure.zip -L "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip"
+          curl -L "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -o allure.zip
           
           # Unzip Allure to the current directory
           unzip allure.zip -d allure
-          
-          # Create a directory for Allure in C:\allure
-          New-Item -ItemType Directory -Force -Path "C:\allure"
-          
-          # Move Allure files to the C:\allure directory
+
+          # Move Allure files to C:\allure
+          mkdir C:\allure
           Move-Item -Path "allure/allure-2.32.0/bin/*" -Destination "C:\allure\bin" -Force
           
           # Clean up the extracted files
-          Remove-Item -Recurse -Force -Path "allure"         # Removing the 'allure' directory
-          Remove-Item -Force -Path "allure.zip"              # Removing the 'allure.zip' file
+          Remove-Item -Recurse -Force -Path "allure"
+          Remove-Item -Force -Path "allure.zip"
 
-      - name: Add Allure to PATH (directly in the session)
+      # Step 2: Add Allure to PATH
+      - name: Add Allure to PATH
         run: |
-          # Add Allure to PATH for this session
-          $env:PATH = "C:\allure\bin;" + $env:PATH
-          
-          # Verify Allure is available by checking the version
+          echo "C:\allure\bin" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8 -Append
+
+      # Step 3: Verify Allure Installation
+      - name: Verify Allure Installation
+        run: |
+          # Ensure Allure is in PATH and check the version
           allure --version
 
-      - name: Run tests
+      # Step 4: Run Tests with Allure
+      - name: Run Tests with Allure
         run: |
           pytest --alluredir=allure-results
 
+      # Step 5: Generate Allure Report
       - name: Generate Allure Report
         run: |
-          # Explicitly use the full path to `allure.bat` to avoid any path issues
-          C:\allure\bin\allure generate allure-results --output allure-report  # Generate the Allure report
+          allure generate allure-results --output allure-report
 
-      - name: Upload Allure report as artifact
+      # Step 6: Upload Allure Report as Artifact
+      - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
