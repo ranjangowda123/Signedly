@@ -40,7 +40,8 @@ jobs:
           Move-Item -Path "allure/allure-2.32.0/bin/*" -Destination "C:\allure\bin" -Force
           
           # Clean up the extracted files
-          Remove-Item -Recurse -Force allure allure.zip
+          Remove-Item -Recurse -Force -Path "allure"        # Removing the 'allure' directory
+          Remove-Item -Force -Path "allure.zip"             # Removing the 'allure.zip' file
 
       - name: Run tests
         run: |
