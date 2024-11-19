@@ -19,11 +19,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+              pip install -r requirements.txt
 
       - name: Install Playwright browsers
         run: |
-          python -m playwright install
+              python -m playwright install
 
       - name: Install Allure Commandline
         run: |
@@ -63,11 +63,11 @@ jobs:
         run: |
               echo $env:PATH
 
-      
+
       - name: Verify Allure Installation
         run: |
-                # Ensure Allure is available in PATH and check the version
-                allure --version
+          cmd /c allure --version  # Use cmd to run allure.bat
+      
 
       - name: Run tests
         run: |
