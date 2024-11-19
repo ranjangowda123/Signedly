@@ -45,9 +45,25 @@ jobs:
 
       - name: Add Allure to PATH
         run: |
-                # Add Allure to PATH for the session (modify environment variables)
+                # Add Allure to the system PATH for this session
                 echo "C:\\allure\\bin" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8 -Append
+                # Also, add to the PATH for the current script (for this step to work)
+                $env:PATH = "C:\\allure\\bin;" + $env:PATH
 
+      - name: Verify Allure.bat exists
+        run: |
+                if (Test-Path "C:\allure\bin\allure.bat") {
+                  Write-Host "allure.bat found"
+                } else {
+                  Write-Host "allure.bat not found"
+                  exit 1
+                }
+
+      - name: Verify PATH variable
+        run: |
+              echo $env:PATH
+
+      
       - name: Verify Allure Installation
         run: |
                 # Ensure Allure is available in PATH and check the version
