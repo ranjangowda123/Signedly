@@ -27,11 +27,37 @@ jobs:
 
       - name: Install Allure Report
         run: |
-          wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.32.0/allure-commandline-2.32.0.tgz
-          tar -zxvf allure-commandline-2.32.0.tgz
-          sudo mv allure-2.32.0 /opt/allure 
+          # Download Allure Commandline using Invoke-WebRequest (PowerShell)
+          Invoke-WebRequest -Uri "https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.32.0/allure-commandline-2.32.0.tgz" -OutFile "allure-commandline-2.32.0.tgz"
+          
+          # Extract the .tgz file using Expand-Archive (native to Windows)
+          Expand-Archive -Path allure-commandline-2.32.0.tgz -DestinationPath allure-commandline
+          
+          # Move Allure to C:\allure (standard path on Windows for installed programs)
+          Move-Item -Path allure-commandline\allure-2.32.0 -Destination "C:\allure"
 
-#      - name: Install Google Chrome
+      - name: Run tests
+        run: |
+          pytest --alluredir=allure-results
+
+      - name: Generate Allure Report
+        run: |
+          # Start Allure server from the installed directory
+          C:\allure\bin\allure serve allure-results
+
+      - name: Upload Allure report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-results
+
+
+
+
+
+
+
+#- name: Install Google Chrome
 #        run: |
 #          # Download Chrome installer
 #          $chrome_installer_url = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
@@ -42,19 +68,3 @@ jobs:
 #
 #          # Clean up installer file
 #          Remove-Item "$env:USERPROFILE\chrome_installer.exe"
-        
-      
-
-      - name: Run tests
-        run: |
-          pytest --alluredir=allure-results
-
-      - name: Generate Allure Report
-        run: |
-          /opt/allure/bin/allure serve allure-results
-
-      - name: Upload Allure report as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-report
-          path: allure-results
