@@ -42,6 +42,11 @@ jobs:
           # Clean up the extracted files
           Remove-Item -Recurse -Force -Path "allure"        # Removing the 'allure' directory
           Remove-Item -Force -Path "allure.zip"             # Removing the 'allure.zip' file
+          
+          # Add Allure to the system PATH for the current session
+          $env:PATH += ";C:\allure\bin"
+          Write-Host "Allure installed and added to PATH"
+      
 
       - name: Run tests
         run: |
@@ -49,8 +54,11 @@ jobs:
 
       - name: Generate Allure Report
         run: |
-          # Generate the Allure report by executing from the installed directory
-          C:\allure\bin\allure generate allure-results --output allure-report
+          # Verify if allure command is available
+          allure --version
+    
+          # Generate the Allure report (it will generate the report in the 'allure-report' folder)
+          allure generate allure-results --output allure-report
 
       - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
