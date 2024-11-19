@@ -43,14 +43,24 @@ jobs:
           Remove-Item -Recurse -Force -Path "allure"         # Removing the 'allure' directory
           Remove-Item -Force -Path "allure.zip"              # Removing the 'allure.zip' file
 
-      - name: Add Allure to PATH
+      - name: Add Allure to PATH (directly in the environment)
         run: |
-          echo "C:\\allure\\bin" >> $Env:GITHUB_PATH  # Add Allure to the system PATH
+          echo "C:\allure\bin" >> $Env:GITHUB_PATH
+          # Add allure to the PATH for this session
+          $env:PATH = "C:\allure\bin;" + $env:PATH
+          
+          # Verify Allure is now in the PATH
+          Write-Host "Allure installed at C:\allure\bin"
+          Write-Host "Current PATH: $env:PATH"
 
       - name: Verify Allure Installation
         run: |
-          # Check if the allure binary exists in the correct directory
-          if (Test-Path "C:\allure\bin\allure.bat") { Write-Host "Allure is installed at C:\allure\bin" } else { Write-Host "Allure not found!" }
+          # Check if allure command exists in PATH
+          if (Test-Path "C:\allure\bin\allure.bat") { 
+            Write-Host "Allure is installed at C:\allure\bin" 
+          } else { 
+            Write-Host "Allure not found!" 
+          }
           
           # Now check allure version to verify it works
           allure --version
