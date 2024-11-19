@@ -50,10 +50,10 @@ jobs:
       - name: Generate Allure Report
         run: |
           # Generate the Allure report by executing from the installed directory
-          C:\allure\bin\allure serve allure-results
+          C:\allure\bin\allure generate allure-results --output allure-report
 
       - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
-          path: allure-results
+          path: allure-report
