@@ -47,10 +47,13 @@ jobs:
         run: |
           echo "C:\\allure\\bin" >> $Env:GITHUB_PATH  # Add Allure to the system PATH
 
-      - name: Verify Allure Command Path
+      - name: Verify Allure Installation
         run: |
-          echo $Env:GITHUB_PATH  # Debugging to verify if Allure is in the PATH
-          allure --version  # Verify allure is installed and available in PATH
+          # Check if the allure binary exists in the correct directory
+          if (Test-Path "C:\allure\bin\allure.bat") { Write-Host "Allure is installed at C:\allure\bin" } else { Write-Host "Allure not found!" }
+          
+          # Now check allure version to verify it works
+          allure --version
 
       - name: Run tests
         run: |
