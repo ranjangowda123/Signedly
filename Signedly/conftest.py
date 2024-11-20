@@ -32,8 +32,6 @@ def page(request):
         page.get_by_text("Logout").click()
         page.close()
 
-
-
 def test_setup(page):
     pass
 
