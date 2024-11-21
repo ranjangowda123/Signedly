@@ -1,0 +1,81 @@
+version: 2.1
+
+executors:
+  python-executor:
+    docker:
+      - image: python:3.12.5-slim  # Use Python 3.12.5 slim image
+    working_directory: ~/repo
+
+jobs:
+  install_dependencies:
+    executor: python-executor
+    steps:
+      - checkout  # Check out the source code
+      - run:
+          name: Install pip and dependencies
+          command: |
+            python -m venv venv  # Create a virtual environment
+            . venv/bin/activate  # Activate the virtual environment
+            pip install --upgrade pip  # Upgrade pip
+            pip install -r requirements.txt  # Install dependencies
+
+  run_tests:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Run Playwright setup
+          command: |
+            . venv/bin/activate  # Activate virtual environment
+            pip install playwright
+            python -m playwright install  # Install Playwright browsers
+      - run:
+          name: Run pytest with Allure
+          command: |
+            . venv/bin/activate  # Activate virtual environment
+            pip install allure-pytest  # Install Allure for Pytest
+            pytest --alluredir=allure-results  # Run tests with Allure result output
+
+  upload_allure_report:
+    docker:
+      - image: python:3.12.5-slim  # Base image to upload the Allure report
+    steps:
+      - checkout
+      - run:
+          name: Install Allure CLI dependencies
+          command: |
+            apt-get update && apt-get install -y \
+              curl \
+              jq \
+              wget \
+              unzip  # Install necessary tools
+
+      - run:
+          name: Install Allure CLI
+          command: |
+            curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
+              | jq -r '.assets[] | select(.name | test("allure-commandline.*\\.zip$")) | .browser_download_url' \
+              | xargs wget -qO allure.zip
+            unzip allure.zip -d allure
+            export PATH=$PATH:$(pwd)/allure/bin  # Add Allure to the PATH
+
+      - run:
+          name: Generate Allure report
+          command: allure serve allure-results  # Generate the Allure report
+
+      - store_artifacts:
+          path: allure-results  # Store the generated Allure results as artifacts
+          destination: allure-results
+    executor:
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - install_dependencies
+      - run_tests:
+          requires:
+            - install_dependencies
+      - upload_allure_report:
+          requires:
+            - run_tests

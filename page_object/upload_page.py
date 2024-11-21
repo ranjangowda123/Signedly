@@ -17,6 +17,7 @@ class UploadFile:
         updated_file_name = Path(new_file_path)
         file_name = updated_file_name.name
         self.page.locator(self.upload_file_button).set_input_files(new_file_path)
+        self.page.locator(".loader").first.wait_for(state="hidden", timeout=100000)
         self.page.get_by_text(self.click_on_next_button).click()
         return file_name , new_file_path
 

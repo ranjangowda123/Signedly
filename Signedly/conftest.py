@@ -10,20 +10,31 @@ def pytest_addoption(parser):
         "--browser_name", action="store", default="chromium")
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 @allure.feature('Authentication')
 def page(request):
     if asyncio.get_event_loop().is_running():
         raise RuntimeError("An asyncio event loop is running. Please use the sync API outside an async event loop.")
     browser_name = request.config.getoption("browser_name")
     with sync_playwright() as playwright:
-        browser = getattr(playwright, browser_name).launch(headless=False, slow_mo=500)
+        browser = getattr(playwright, browser_name).launch(headless=False, slow_mo=500)   # getattr() will give all 3 browsers
         # chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         # browser = playwright.chromium.launch(executable_path=chrome_path,headless=False,slow_mo=500)
+
+        # ...........for mobile device...........
+        #.......The ** is unpacking the dictionary pixel_5 and passing its keys and values as keyword arguments to browser.new_context().
+        # pixel_5 = playwright.devices["iPhone 15 Pro Max"]
+        # context = browser.new_context()
+        # page = context.new_page()
+
+        #..........for normal execution...............
         page = browser.new_page()
-        page.goto("https://qa.signedly.com/")
-        page.get_by_label("Email").fill("ranjan+7@reckonsys.com")
-        page.get_by_label("Password").fill("Test@1234")
+        qa_url = "https://qa.signedly.com/"
+        prod_url = "https://www.signedly.com/"
+        page.goto(prod_url)
+        page.locator("text = Log In").first.click()
+        page.get_by_label("Email").fill("ranjan+10@reckonsys.com")
+        page.get_by_label("Password").fill("143792@Rn")
         page.locator("#kc-login").click()
         yield page
         print("Ready To Logout...........")
