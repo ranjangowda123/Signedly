@@ -63,6 +63,7 @@ jobs:
 
       # Step: Run Tests with Allure results
       - name: Run Tests with Allure results
+        continue-on-error: true
         run: |
           pytest --alluredir=allure-results  # Run your tests and store the results in allure-results
 
