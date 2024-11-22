@@ -81,8 +81,13 @@ jobs:
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          publish_dir: ./allure-report
+          publish_dir: ./allure-report  # Ensure this path is correct based on where the report is generated
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_branch: gh-pages  # Push to this branch (creates it if it doesn't exist)
+          publish_branch: gh-pages  # Push to the gh-pages branch
           allow_empty_commit: true  # Allow empty commits (useful for first-time deployment)
-          keep_files: false
+          keep_files: false  # Remove all files from the gh-pages branch before deploying new content
+
+      # Optional: Add .nojekyll file to avoid GitHub Pages processing issues
+      - name: Add .nojekyll file
+        run: echo > ./allure-report/.nojekyll
+
