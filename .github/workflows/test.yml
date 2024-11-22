@@ -64,6 +64,11 @@ jobs:
           # Generate the Allure report using full path
           & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report  # Generate the Allure HTML report
 
+      # Step: Run Tests with Allure results
+      - name: Run Tests with Allure results
+        run: |
+          pytest --alluredir=allure-results  # Run your tests and store the results in allure-results
+
       - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
         uses: actions/upload-artifact@v3
         with:
