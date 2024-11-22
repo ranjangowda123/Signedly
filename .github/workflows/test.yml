@@ -39,23 +39,26 @@ jobs:
               Write-Host "allure.bat not found"
               exit 1  # Exit the action if allure.bat is not found
           }
-
+          
           # Create target directory for Allure if it doesn't exist
           $allurePath = "C:\allure\bin"
           if (-not (Test-Path $allurePath)) {
               New-Item -Path $allurePath -ItemType Directory
           }
-
+          
           # Move allure.bat to the target directory
           move-item -Path "allure\allure-2.32.0\bin\allure.bat" -Destination $allurePath -Force
-
+          
           # Ensure allure is in the PATH for the current session (it won't persist across sessions)
           [System.Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$allurePath", [System.EnvironmentVariableTarget]::Process)
-
-      - name: Verify Allure installation
-        run: |
-          allure --version  # Check if allure is accessible
-          allure generate allure-results --clean -o allure-report  # Generate the Allure HTML report
+          
+          # Test using the full path to allure.bat
+          Write-Host "Running Allure with full path:"
+          & "C:\allure\bin\allure.bat" --version  # Check if allure is accessible
+          
+          # Generate the Allure report using full path as well
+          Write-Host "Generating Allure report:"
+          & "C:\allure\bin\allure.bat" generate allure-results --clean -o allure-report  # Generate the Allure HTML report
 
       - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
         uses: actions/upload-artifact@v3
@@ -64,7 +67,7 @@ jobs:
           path: allure-results
 
       - name: Deploy Allure Report to GitHub Pages  # Deploy the generated report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3  # Action to deploy to GitHub Pages
         with:
-          publish_dir: ./allure-report
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report  # Directory containing the Allure HTML report
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token to authenticate the action
