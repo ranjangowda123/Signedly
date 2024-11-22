@@ -1,78 +1,38 @@
 version: 2.1
 
 executors:
-  python-executor:
+  windows-executor:
     docker:
-      - image: python:3.12.5-slim
-    working_directory: ~/repo  # Make sure this is correct
+      - image: cimg/python:3.12.5
+    working_directory: ~/repo
 
 jobs:
   install_dependencies:
-    executor: python-executor
+    executor: windows-executor
     steps:
       - checkout
       - run:
           name: Install dependencies
-          shell: /bin/bash -l {0}  # Explicitly use bash to source the venv
           command: |
             python -m venv venv
-            ls -l venv  # Verify venv directory
-            . venv/bin/activate
-            pip install -U pip  # Update pip
+            .\venv\Scripts\activate
             pip install -r requirements.txt
 
-  run_tests:
-    executor: python-executor
+  test:
+    executor: windows-executor
     steps:
       - checkout
       - run:
-          name: Run pytest with Allure results
+          name: Run Playwright tests with pytest
           command: |
-            . venv/bin/activate
-            pytest --alluredir=allure-results
-
-  upload_allure_report:
-    executor: python-executor
-    environment:
-      PATH: $PATH:$(pwd)/allure/bin  # Set Allure path globally here
-    steps:
-      - run:
-          name: Install Allure CLI dependencies
-          command: |
-            apt-get update && apt-get install -y \
-              curl \
-              jq \
-              wget \
-              unzip
-      - run:
-          name: Install Allure CLI
-          command: |
-            curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
-              | jq -r '.assets[] | select(.name | test("allure-commandline.*\\.zip$")) | .browser_download_url' \
-              | xargs wget -qO allure.zip
-            unzip allure.zip -d allure
-      - run:
-          name: Check if allure-results directory exists
-          command: |
-            if [ ! -d "allure-results" ]; then
-              echo "Allure results directory is missing. Skipping report generation."
-              exit 0
-            fi
-      - run:
-          name: Generate Allure report
-          command: allure serve allure-results
-      - store_artifacts:
-          path: allure-results
-          destination: allure-results
+            .\venv\Scripts\activate
+            pytest --maxfail=1 --disable-warnings -q
 
 workflows:
   version: 2
   test:
     jobs:
       - install_dependencies
-      - run_tests:
+      - test:
           requires:
             - install_dependencies
-      - upload_allure_report:
-          requires:
-            - run_tests
