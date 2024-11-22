@@ -24,6 +24,12 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
+      - name: Install Allure Commandline    # install allure command line
+        run: |
+            curl -sSL https://dl.bintray.com/qameta/generic/io/qameta/allure/allure-commandline/2.18.1/allure-commandline-2.18.1.zip -o allure.zip
+            unzip allure.zip -d allure
+            sudo mv allure /usr/local/bin/
+      
       - name: Run tests and generate Allure report  # Run tests and generate Allure results
         run: |
           pytest --alluredir=allure-results  # Generate Allure results in the allure-results folder
