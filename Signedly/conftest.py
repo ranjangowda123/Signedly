@@ -31,7 +31,7 @@ def page(request):
         page = browser.new_page()
         qa_url = "https://qa.signedly.com/"
         prod_url = "https://www.signedly.com/"
-        page.goto(prod_url)
+        page.goto(qa_url)
         page.locator("text = Log In").first.click()
         page.get_by_label("Email").fill("ranjan+10@reckonsys.com")
         page.get_by_label("Password").fill("143792@Rn")

@@ -23,22 +23,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run Playwright setup
-          command: |
-            . venv/bin/activate
-            pip install playwright
-            python -m playwright install
-      - run:
           name: Run pytest with Allure results
           command: |
             . venv/bin/activate
-            pip install allure-pytest
             pytest --alluredir=allure-results
 
   upload_allure_report:
     executor: python-executor
+    environment:
+      PATH: $PATH:$(pwd)/allure/bin  # Set Allure path globally here
     steps:
-      - checkout
       - run:
           name: Install Allure CLI dependencies
           command: |
@@ -54,7 +48,13 @@ jobs:
               | jq -r '.assets[] | select(.name | test("allure-commandline.*\\.zip$")) | .browser_download_url' \
               | xargs wget -qO allure.zip
             unzip allure.zip -d allure
-            export PATH=$PATH:$(pwd)/allure/bin
+      - run:
+          name: Check if allure-results directory exists
+          command: |
+            if [ ! -d "allure-results" ]; then
+              echo "Allure results directory is missing. Skipping report generation."
+              exit 1
+            fi
       - run:
           name: Generate Allure report
           command: allure serve allure-results
