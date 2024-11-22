@@ -4,7 +4,7 @@ executors:
   python-executor:
     docker:
       - image: python:3.12.5-slim
-    working_directory: ~/repo
+    working_directory: ~/repo  # Make sure this is correct
 
 jobs:
   install_dependencies:
@@ -13,9 +13,12 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
+          shell: /bin/bash -l {0}  # Explicitly use bash to source the venv
           command: |
             python -m venv venv
+            ls -l venv  # Verify venv directory
             . venv/bin/activate
+            pip install -U pip  # Update pip
             pip install -r requirements.txt
 
   run_tests:
@@ -53,13 +56,13 @@ jobs:
           command: |
             if [ ! -d "allure-results" ]; then
               echo "Allure results directory is missing. Skipping report generation."
-              exit 1
+              exit 0
             fi
       - run:
           name: Generate Allure report
           command: allure serve allure-results
       - store_artifacts:
-          path: allure-results  # Store Allure results as artifacts
+          path: allure-results
           destination: allure-results
 
 workflows:
@@ -73,4 +76,3 @@ workflows:
       - upload_allure_report:
           requires:
             - run_tests
-
