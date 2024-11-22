@@ -24,16 +24,28 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
-      - name: Install Allure Commandline  # Install Allure command-line tool on Windows
+      - name: Install Allure Commandline on Windows
         run: |
+          # Download Allure command-line tool
           Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -OutFile "allure.zip"
+          
+          # Extract the downloaded ZIP file
           Expand-Archive -Path "allure.zip" -DestinationPath "allure"
-          move-item -Path "allure\allure-2.32.0\bin\allure.bat" -Destination "C:\Program Files\Allure"  # Move allure to a common directory
-          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Program Files\Allure", [System.EnvironmentVariableTarget]::Machine)  # Add Allure to PATH
 
-      - name: Run tests and generate Allure report  # Run tests and generate Allure results
+          # Move allure.bat to a common directory (C:\allure\bin)
+          $allurePath = "C:\allure\bin"
+          move-item -Path "allure\allure-2.32.0\bin\allure.bat" -Destination $allurePath
+          
+          # Add Allure to PATH in the current session (not permanent for the machine)
+          [System.Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$allurePath", [System.EnvironmentVariableTarget]::Process)
+
+      - name: Check if Allure is installed correctly
         run: |
-          pytest --alluredir=allure-results  # Generate Allure results in the allure-results folder
+          allure --version  # This should output the installed version of Allure
+
+      - name: Run tests and generate Allure report
+        run: |
+          pytest --alluredir=allure-results  # Generate Allure results in allure-results directory
 
       - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
         uses: actions/upload-artifact@v3
