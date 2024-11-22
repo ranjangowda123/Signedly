@@ -24,12 +24,13 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
-      - name: Install Allure Commandline    # install allure command line
+      - name: Install Allure Commandline  # Install Allure command-line tool on Windows
         run: |
-            curl -sSL https://dl.bintray.com/qameta/generic/io/qameta/allure/allure-commandline/2.18.1/allure-commandline-2.18.1.zip -o allure.zip
-            unzip allure.zip -d allure
-            sudo mv allure /usr/local/bin/
-      
+          Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -OutFile "allure.zip"
+          Expand-Archive -Path "allure.zip" -DestinationPath "allure"
+          move-item -Path "allure\allure-2.32.0\bin\allure.bat" -Destination "C:\Program Files\Allure"  # Move allure to a common directory
+          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Program Files\Allure", [System.EnvironmentVariableTarget]::Machine)  # Add Allure to PATH
+
       - name: Run tests and generate Allure report  # Run tests and generate Allure results
         run: |
           pytest --alluredir=allure-results  # Generate Allure results in the allure-results folder
