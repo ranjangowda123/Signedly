@@ -57,6 +57,7 @@ jobs:
           allure --version  # Check if allure is accessible
           allure generate allure-results --clean -o allure-report  # Generate the Allure HTML report
 
+
       - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
         uses: actions/upload-artifact@v3
         with:
