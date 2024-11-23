@@ -30,83 +30,11 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
-      # Step 5: Install Java (required by Allure)
-      - name: Install Java (required by Allure)  # Install Java to run Allure
+      - name: Run Tests
+        continue-on-error: true
         run: |
-          choco install openjdk11 -y  # Install Java (OpenJDK 11)
+          pytest -v
 
-      # Step 6: Install Allure Commandline on Windows
-      - name: Install Allure Commandline on Windows
-        run: |
-          # Download the Allure command-line tool zip file
-          Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -OutFile "allure.zip"
-          
-          # Extract the zip file to the current directory
-          Expand-Archive -Path "allure.zip" -DestinationPath "allure"
-          
-          # Verify the extraction, ensure allure.bat exists
-          if (Test-Path "allure\allure-2.32.0\bin\allure.bat") {
-              Write-Host "allure.bat found"
-          } else {
-              Write-Host "allure.bat not found"
-              exit 1  # Exit the action if allure.bat is not found
-          }
-
-          # Move the entire Allure directory to a common location
-          $allurePath = "C:\allure"
-          if (-not (Test-Path $allurePath)) {
-              New-Item -Path $allurePath -ItemType Directory
-          }
-
-          # Move the extracted Allure directory to C:\allure
-          move-item -Path "allure\allure-2.32.0" -Destination $allurePath -Force
-          
-          # Add Allure to the PATH for the current session (it won't persist across sessions)
-          [System.Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$allurePath\allure-2.32.0\bin", [System.EnvironmentVariableTarget]::Process)
-
-      # Step 7: Verify Allure installation
-      - name: Verify Allure installation
-        run: |
-          # Running Allure with full path
-          & "C:\allure\allure-2.32.0\bin\allure.bat" --version  # Check if allure is accessible
-
-      # Step 8: Run Tests with Allure results
-      - name: Run Tests with Allure results
-        continue-on-error: true  # Allow the pipeline to continue even if tests fail
-        run: |
-          pytest --alluredir=allure-results  # Run your tests and store the results in allure-results
-
-      # Step 9: Generate Allure Report
-      - name: Generate Allure Report
-        run: |
-          # Generate the Allure report using full path
-          & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report  # Generate the Allure HTML report
-
-      # Step 10: Verify contents of allure-report folder before deployment
-      - name: Verify allure-report contents
-        run: |
-          # List contents of allure-report folder to confirm files are present
-          dir allure-report  # List files in allure-report folder
-
-      # Step 11: Upload Allure results as artifacts (optional but useful for debugging)
-      - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-results
-          path: allure-results
+     
 
 
-      - name: Create .nojekyll file
-        run: |
-          echo "" > allure-report/.nojekyll  # Create the .nojekyll file to prevent Jekyll processing
-
-      # Step 12: Deploy Allure Report to GitHub Pages
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # Step 12a: Correctly set publish_dir path
-          publish_dir: allure-report  # No need for './', since the allure-report folder exists at the root level
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_branch: gh-pages  # Push to the gh-pages branch
-          allow_empty_commit: true  # Allow empty commits (useful for first-time deployment)
-          keep_files: false  # Remove all files from the gh-pages branch before deploying new content
