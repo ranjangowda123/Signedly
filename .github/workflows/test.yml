@@ -98,8 +98,7 @@ jobs:
 
       - name: Create .nojekyll file
         run: |
-          echo > allure-report/.nojekyll  # Create the .nojekyll file to prevent Jekyll processing
-
+          echo "" > allure-report/.nojekyll  # Create the .nojekyll file to prevent Jekyll processing
 
       # Step 12: Deploy Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
