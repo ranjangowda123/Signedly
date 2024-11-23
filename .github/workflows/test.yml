@@ -72,6 +72,19 @@ jobs:
           # Generate the Allure report using full path
           & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report  # Generate the Allure HTML report
 
+      - name: List files in the workspace after report generation
+        run: |
+          dir .  # For Windows, list the files in the current directory
+
+      - name: Check if allure-report folder exists
+        run: |
+          if (Test-Path "./allure-report") {
+              Write-Host "allure-report folder found"
+          } else {
+              Write-Host "allure-report folder not found"
+              exit 1  # Exit if the folder doesn't exist
+          }
+
       - name: Upload Allure results as artifacts  # Upload Allure results for use in later steps
         uses: actions/upload-artifact@v3
         with:
@@ -86,8 +99,3 @@ jobs:
           publish_branch: gh-pages  # Push to the gh-pages branch
           allow_empty_commit: true  # Allow empty commits (useful for first-time deployment)
           keep_files: false  # Remove all files from the gh-pages branch before deploying new content
-
-      # Optional: Add .nojekyll file to avoid GitHub Pages processing issues
-      - name: Add .nojekyll file
-        run: echo > ./allure-report/.nojekyll
-
