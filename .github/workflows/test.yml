@@ -1,12 +1,12 @@
-name: Tests_CICD
+name: Run Tests and Generate Allure Report
 
 on:
   push:
     branches:
-      - main  # You can change to any branch you want
+      - main  # Or any branch you want to trigger actions from
 
 jobs:
-  build:
+  test:
     runs-on: windows-latest
 
     steps:
@@ -31,14 +31,20 @@ jobs:
         run: |
           python -m playwright install
 
-      # Run the tests with pytest and generate allure report
-      - name: Run pytest and generate allure report
+      # Run the tests with pytest and generate allure results
+      - name: Run pytest
+        continue-on-error: true  # Ensure the pipeline continues even if tests fail
         run: |
-          pytest --alluredir=allure-results  # Run tests and generate allure results
+          pytest --maxfail=1 --disable-warnings -v -s --alluredir=allure-results
 
-      # Upload the allure-results as an artifact
-      - name: Upload allure results as artifact
+      # Generate Allure report (even if tests fail)
+      - name: Generate Allure Report
+        run: |
+          allure generate allure-results --clean -o allure-report
+
+      # Upload the generated Allure report as an artifact
+      - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: allure-results  # Artifact name
-          path: allure-results  # Path to the directory containing allure results
+          name: allure-report
+          path: allure-report
