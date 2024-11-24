@@ -31,12 +31,11 @@ jobs:
         run: |
           python -m playwright install
 
-      # Install Allure Command Line Interface (CLI)
-      - name: Install Allure CLI
+      - name: Install Allure CLI (via npm)
         run: |
-          choco install allure
-
-      # Run the tests with pytest
+          npm install -g allure-commandline --save-dev      
+          
+          # Run the tests with pytest
       - name: Run pytest
         continue-on-error: true
         run: |
