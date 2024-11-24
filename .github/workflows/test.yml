@@ -1,9 +1,9 @@
-name: Tests_CICDy
+name: Tests_CICD
 
 on:
   push:
     branches:
-      - main  # or any branch you want to trigger actions from
+      - main  # You can change to any branch you want
 
 jobs:
   build:
@@ -31,8 +31,14 @@ jobs:
         run: |
           python -m playwright install
 
-      # Run the tests with pytest
-      - name: Run pytest
-        continue-on-error: true
+      # Run the tests with pytest and generate allure report
+      - name: Run pytest and generate allure report
         run: |
-          pytest -v -s
+          pytest --alluredir=allure-results  # Run tests and generate allure results
+
+      # Upload the allure-results as an artifact
+      - name: Upload allure results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-results  # Artifact name
+          path: allure-results  # Path to the directory containing allure results
