@@ -31,9 +31,10 @@ def page(request):
         page = browser.new_page()
         qa_url = "https://qa.signedly.com/"
         prod_url = "https://www.signedly.com/"
-        page.goto(qa_url)
-        page.get_by_label("Email").fill("ranjan+7@reckonsys.com")
-        page.get_by_label("Password").fill("Test@1234")
+        page.goto(prod_url)
+        page.get_by_text("Sign up for free").first.click()
+        page.get_by_label("Email").fill("ranjan+10@reckonsys.com")
+        page.get_by_label("Password").fill("143792@Rn")
         page.locator("#kc-login").click()
         yield page
         print("Ready To Logout...........")
