@@ -36,10 +36,9 @@ jobs:
           npm install -g allure-commandline --save-dev      
           
           # Run the tests with pytest
-      - name: Run pytest
-        continue-on-error: true
+      - name: Run pytest with Allure results
         run: |
-          pytest --maxfail=1 --disable-warnings -q
+          pytest --alluredir=allure-results --maxfail=1 --disable-warnings -q
 
       # Generate Allure report after tests are completed
       - name: Generate Allure Report
@@ -50,5 +49,5 @@ jobs:
       - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: allure-report
-          path: allure-report
+          name: allure-results
+          path: allure-results
