@@ -76,14 +76,11 @@ jobs:
              git fetch origin gh-pages
              git checkout gh-pages || git checkout -b gh-pages
 
-      - name: Configure Git
+      - name: Push changes to gh-pages
         run: |
           git config --global user.name "ranjangowda123"
           git config --global user.email "ranjan@reckonsys.com"
           git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/ranjangowda123/Signedly.git
-
-      - name: Push changes to gh-pages
-        run: |
           git checkout gh-pages || git checkout -b gh-pages
           git add .
           git commit -m "Add Allure report"
