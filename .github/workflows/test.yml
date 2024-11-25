@@ -80,7 +80,7 @@ jobs:
         run: |
           git config --global user.name "ranjangowda123"
           git config --global user.email "ranjan@reckonsys.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/ranjangowda123/Signedly.git
+          git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/ranjangowda123/Signedly.git
 
       - name: Push changes to gh-pages
         run: |
