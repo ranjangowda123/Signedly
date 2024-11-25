@@ -1,0 +1,9 @@
+Playwright_basics/
+.idea/
+.circleci/
+.venv/
+.features/
+.main.py/
+
+
+allure-results/
