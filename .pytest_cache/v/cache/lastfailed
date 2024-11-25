@@ -1,7 +1,0 @@
-{
-  "Signedly/test_contact_creation.py::test_contact": true,
-  "Signedly/test_folder_creation_self_signee.py::test_folder_creation": true,
-  "Signedly/test_self_signee.py::test_selfsignee": true,
-  "Signedly/test_template_creation.py::test_template_creation": true,
-  "Signedly/test_workflow_creation.py::test_workflow": true
-}

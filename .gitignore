@@ -1,8 +1,0 @@
-Playwright_basics/
-.idea/
-.circleci/
-.venv/
-.features/
-.main.py/
-Signedly/allure-results/
-Signedly/screenshots/
