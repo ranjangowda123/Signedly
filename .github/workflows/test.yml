@@ -70,19 +70,15 @@ jobs:
       - name: Generate Allure Report
         run: |
              & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report
-      
-      - name: Set up gh-pages branch
-        run: |
-             git fetch origin gh-pages
-             git checkout gh-pages || git checkout -b gh-pages
 
-      - name: Push changes to gh-pages
-        run: |
-          git config --global user.name "ranjangowda123"
-          git config --global user.email "ranjan@reckonsys.com"
-          git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/ranjangowda123/Signedly.git
-          git checkout gh-pages || git checkout -b gh-pages
-          git add .
-          git commit -m "Add Allure report"
-          git push origin gh-pages
-     
+      - name: Deploy Allure Report to GitHub Pages
+        uses: martynus/allure-report-action@v2
+        with:
+           publish_dir: allure-report  # This points to the 'allure-report' folder at the root level
+           github_token: ${{ secrets.GH_TOKEN }}  # Uses GitHub token for authentication
+           publish_branch: gh-pages  # Pushes to the 'gh-pages' branch
+           allow_empty_commit: true  # Allows empty commits, useful for initial deployments
+           keep_files: false  # Removes all files in the gh-pages branch before pushing new content
+
+
+
