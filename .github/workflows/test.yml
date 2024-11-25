@@ -31,20 +31,44 @@ jobs:
         run: |
           python -m playwright install
 
-      - name: Install Allure CLI (via npm)
+      - name: Install Allure Commandline on Windows
         run: |
-          npm install -g allure-commandline --save-dev      
-          
-          # Run the tests with pytest
-      - name: Run pytest with Allure results
+            # Download the Allure command-line tool zip file
+            Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -OutFile "allure.zip"
+            
+            # Extract the zip file to the current directory
+            Expand-Archive -Path "allure.zip" -DestinationPath "allure"
+            
+            # Verify the extraction, ensure allure.bat exists
+            if (Test-Path "allure\allure-2.32.0\bin\allure.bat") {
+            Write-Host "allure.bat found"
+            } else {
+            Write-Host "allure.bat not found"
+            exit 1
+            }
+            
+            # Move the Allure directory to a common location
+            $allurePath = "C:\allure"
+            if (-not (Test-Path $allurePath)) {
+            New-Item -Path $allurePath -ItemType Directory
+            }
+            move-item -Path "allure\allure-2.32.0" -Destination $allurePath -Force
+            
+            # Persist Allure to PATH
+            [System.Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$allurePath\allure-2.32.0\bin", [System.EnvironmentVariableTarget]::Machine)
+
+      - name: Verify Allure installation
+        run: |
+                # Verify Allure is installed correctly
+                & "C:\allure\allure-2.32.0\bin\allure.bat" --version
+
+      - name: Run Tests with Allure results
         continue-on-error: true
         run: |
-          pytest --alluredir=allure-results --maxfail=1 --disable-warnings -q
-
-      # Generate Allure report after tests are completed
+                pytest --alluredir=allure-results --maxfail=1 --disable-warnings
       - name: Generate Allure Report
         run: |
-          allure generate allure-results --clean -o allure-report
+                & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report
 
       # Upload Allure report as artifact
       - name: Upload Allure report as artifact
