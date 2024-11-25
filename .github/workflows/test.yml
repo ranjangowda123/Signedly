@@ -77,3 +77,4 @@ jobs:
             git add allure-report
             git commit -m "Add Allure report"
             git push origin gh-pages
+
