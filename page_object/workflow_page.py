@@ -20,7 +20,7 @@ class WorkFlow:
         self.page.get_by_text(self.work_text).click()
 
     def click_on_create_workflow(self):
-        self.page.locator(self.create_work_text).click()
+        self.page.locator(self.create_work_text).first.click()
 
     def enter_on_workflow(self):
         workflow_name = f"Workflow_{random.randint(2, 2000)}"
