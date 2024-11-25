@@ -75,11 +75,18 @@ jobs:
         run: |
              git fetch origin gh-pages
              git checkout gh-pages || git checkout -b gh-pages
-      
-      - name: Push Allure report to GitHub Pages
+
+      - name: Configure Git for GitHub Actions
         run: |
-            git config --global user.name "ranjangowda123"
-            git config --global user.email "ranjan@reckonsys.com"
-            git add allure-report
-            git commit -m "Add Allure report"
-            git push origin gh-pages
+          git config --global user.name "ranjangowda123"
+          git config --global user.email "ranjan@reckonsys.com"
+
+      - name: Commit and Push Allure Report
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          git checkout gh-pages || git checkout -b gh-pages
+          git add allure-report
+          git commit -m "Add Allure report" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/ranjangowda123/Signedly.git gh-pages
+      
