@@ -4,6 +4,5 @@ Playwright_basics/
 .venv/
 .features/
 .main.py/
-
-
-allure-results/
+Signedly/allure-results/
+Signedly/screenshots/
