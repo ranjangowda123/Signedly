@@ -82,12 +82,14 @@ jobs:
 
       - name: Generate Allure Report
         run: |
-             & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report-${{ matrix.browser }}
+              & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results-chromium allure-results-firefox --clean -o allure-report
+              #  & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report-${{ matrix.browser }}
 
+          # Deploy the Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-           publish_dir: allure-report-${{ matrix.browser }}  # This points to the 'allure-report' folder at the root level
+           publish_dir: allure-report # This points to the 'allure-report' folder at the root level
            github_token: ${{ secrets.GH_TOKEN }}  # Uses GitHub token for authentication
            publish_branch: gh-pages  # Pushes to the 'gh-pages' branch
            allow_empty_commit: true  # Allows empty commits, useful for initial deployments

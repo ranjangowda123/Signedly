@@ -16,6 +16,7 @@ def page(request):
     if asyncio.get_event_loop().is_running():
         raise RuntimeError("An asyncio event loop is running. Please use the sync API outside an async event loop.")
     browser_name = request.config.getoption("browser_name")
+    allure.dynamic.label("browser", browser_name)
     with sync_playwright() as playwright:
         browser = getattr(playwright, browser_name).launch(headless=False, slow_mo=500)   # getattr() will give all 3 browsers
         # chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
