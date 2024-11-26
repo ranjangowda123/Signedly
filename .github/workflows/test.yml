@@ -83,11 +83,11 @@ jobs:
         run: |
           & "C:\allure\allure-2.32.0\bin\allure.bat" generate allure-results --clean -o allure-report-firefox
 
-      - name: Merge Allure Reports
+      - name: Merge Allure Reports into One
         run: |
           mkdir allure-report
-          xcopy /e /i /Y allure-report-chromium allure-report
-          xcopy /e /i /Y allure-report-firefox allure-report
+          xcopy /e /i /Y allure-report-chromium\* allure-report\
+          xcopy /e /i /Y allure-report-firefox\* allure-report\
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
