@@ -42,7 +42,7 @@ jobs:
       # Install Playwright Browsers
       - name: Install Playwright Browsers
         run: |
-          python -m playwright install chromium and firefox
+          python -m playwright install chromium firefox
 
       - name: Install Allure Commandline on Windows
         run: |
