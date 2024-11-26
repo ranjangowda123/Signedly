@@ -43,15 +43,16 @@ jobs:
       - name: Install Playwright Browsers
         run: |
               python -m playwright install chromium firefox
-
+      
+      # Download the Allure command-line tool zip file
       - name: Install Allure Commandline on Windows
-        run: | # Download the Allure command-line tool zip file
+        run: |        
               Invoke-WebRequest -Uri "https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip" -OutFile "allure.zip"
             
-        # Extract the zip file to the current directory
+      # Extract the zip file to the current directory
               Expand-Archive -Path "allure.zip" -DestinationPath "allure"
             
-        # Verify the extraction, ensure allure.bat exists
+      # Verify the extraction, ensure allure.bat exists
               if (Test-Path "allure\allure-2.32.0\bin\allure.bat") {
               Write-Host "allure.bat found"
               } else {
@@ -59,18 +60,19 @@ jobs:
               exit 1
               }
             
-        # Move the Allure directory to a common location
+      # Move the Allure directory to a common location
               $allurePath = "C:\allure"
               if (-not (Test-Path $allurePath)) {
               New-Item -Path $allurePath -ItemType Directory
               }
               move-item -Path "allure\allure-2.32.0" -Destination $allurePath -Force
             
-        # Persist Allure to PATH
+      # Persist Allure to PATH
               [System.Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$allurePath\allure-2.32.0\bin", [System.EnvironmentVariableTarget]::Machine)
 
+      # Verify Allure is installed correctly
       - name: Verify Allure installation
-        run: | # Verify Allure is installed correctly
+        run: | 
               & "C:\allure\allure-2.32.0\bin\allure.bat" --version
 
       - name: Run Tests with Allure results and Test coverage
@@ -91,7 +93,7 @@ jobs:
               xcopy /e /i allure-report-chromium allure-report
               xcopy /e /i allure-report-firefox allure-report
 
-        # Deploy the Allure Report to GitHub Pages
+      # Deploy the Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
