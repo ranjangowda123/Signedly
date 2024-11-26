@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows-latest ]   # Define the OS matrix
-        browser: [chrome,firefox]   # Define the browser matrix
+        browser: [chromium,firefox]   # Define the browser matrix
 
     steps:
       # Checkout the code from GitHub repository
@@ -75,7 +75,7 @@ jobs:
                 # Verify Allure is installed correctly
                 & "C:\allure\allure-2.32.0\bin\allure.bat" --version
 
-      - name: Run Tests with Allure results and cross browser and cross platform and test coverage
+      - name: Run Tests with Allure results and Test coverage
         continue-on-error: true
         run: |
                  pytest --alluredir=allure-results --maxfail=1 --disable-warnings --browser=${{matrix.browser}} --cov=Signedly --cov-report=xml --cov-report=term
