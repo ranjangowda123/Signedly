@@ -7,12 +7,25 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}    #  Runs on the specified OS in the matrix
+    strategy:
+      matrix:
+        os:[ windows-latest, ubuntu-latest, macos-latest]   # Define the OS matrix
+        browser:[chrome,firefox]   # Define the browser matrix
 
     steps:
       # Checkout the code from GitHub repository
       - name: Checkout code
         uses: actions/checkout@v3
+
+          # Caching Python dependencies (before setting up Python)
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-cache-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+              ${{ runner.os }}-pip-cache-
 
       # Set up Python 3.12.5
       - name: Set up Python 3.12.5
@@ -62,10 +75,10 @@ jobs:
                 # Verify Allure is installed correctly
                 & "C:\allure\allure-2.32.0\bin\allure.bat" --version
 
-      - name: Run Tests with Allure results
+      - name: Run Tests with Allure results and cross browser and cross platform and test coverage
         continue-on-error: true
         run: |
-                pytest --alluredir=allure-results --maxfail=1 --disable-warnings
+                 pytest --alluredir=allure-results --maxfail=1 --disable-warnings --browser=${{matrix.browser}} --cov=Signedly --cov-report=xml --cov-report=term
 
       - name: Generate Allure Report
         run: |
