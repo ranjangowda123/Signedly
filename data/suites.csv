@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","33673","test_workflow","Signedly","Tue Nov 26 10:22:08 UTC 2024","broken","Tue Nov 26 10:22:41 UTC 2024","","test_workflow_creation","",""
+"","5842","test_workflow","Signedly","Tue Nov 26 10:41:29 UTC 2024","passed","Tue Nov 26 10:41:35 UTC 2024","","test_workflow_creation","",""
