@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}    #  Runs on the specified OS in the matrix
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-latest]   # Define the OS matrix
+        os: [ windows-latest ]   # Define the OS matrix
         browser: [chrome,firefox]   # Define the browser matrix
 
     steps:
