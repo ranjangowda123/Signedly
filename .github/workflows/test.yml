@@ -7,10 +7,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}    #  Runs on the specified OS in the matrix
     strategy:
       matrix:
+        os: [ windows-latest ]   # Define the OS matrix
         browser: [chromium,firefox]   # Define the browser matrix
+    runs-on: ${{ matrix.os }}    #  Runs on the specified OS in the matrix
 
     steps:
       # Checkout the code from GitHub repository
@@ -41,7 +42,7 @@ jobs:
       # Install Playwright Browsers
       - name: Install Playwright Browsers
         run: |
-          python -m playwright install chromium firefox
+          python -m playwright install chromium and firefox
 
       - name: Install Allure Commandline on Windows
         run: |
